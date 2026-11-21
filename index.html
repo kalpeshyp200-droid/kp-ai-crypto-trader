@@ -59,14 +59,9 @@
       <div class="hero">
         <div class="row"><div><div class="muted">BTC / USDT Â· Binance Spot live price</div><div class="price" id="btcPrice">Connectingâ€¦</div><div class="change" id="btcFeedStatus">â— Connecting to Binanceâ€¦</div></div><div class="tag">LIVE PRICE</div></div>
         <div class="small" id="btcUpdated" style="margin-top:5px">Waiting for first price updateâ€¦</div>
-        <div style="height:76px;margin-top:14px">
-          <svg viewBox="0 0 320 76" width="100%" height="100%" preserveAspectRatio="none" aria-label="Illustrative chart, not live price history">
-            <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4d9cff" stop-opacity=".32"/><stop offset="1" stop-color="#4d9cff" stop-opacity="0"/></linearGradient></defs>
-            <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8 L320 76 L0 76Z" fill="url(#area)"/>
-            <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8" fill="none" stroke="#66a7ff" stroke-width="2.5"/>
-          </svg>
-        </div>
-        <div class="small">Illustrative chart only â€” live historical chart is not connected.</div>
+<div id="btcCandleChart" style="width:100%;height:280px;margin-top:15px"></div>
+<div id="candleStatus" class="small">Loading Binance candlestick data...</div>
+
       </div>
 
       <div class="grid">
@@ -160,8 +155,8 @@
   </div>
 </nav>
 
-
-<script>
+<script src="https://unpkg.com/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+  <script>
   const buttons = document.querySelectorAll("nav button");
   const pages = document.querySelectorAll(".page");
   buttons.forEach(btn => btn.addEventListener("click", () => {
@@ -172,7 +167,74 @@
     window.scrollTo({top:0, behavior:"smooth"});
   }));
 
-  // Public Binance Spot prices only. No API key and no order permissions.
+ let btcCandleChart;
+let btcCandleSeries;
+
+async function loadBTCCandles() {
+  const status = document.getElementById("candleStatus");
+  const container = document.getElementById("btcCandleChart");
+
+  try {
+    if (!window.LightweightCharts) {
+      throw new Error("Chart library not loaded");
+    }
+
+    if (!btcCandleChart) {
+      btcCandleChart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: 280,
+        layout: {
+          background: { color: "#14243a" },
+          textColor: "#91a3bb"
+        },
+        grid: {
+          vertLines: { color: "#26364d" },
+          horzLines: { color: "#26364d" }
+        },
+        timeScale: { timeVisible: true }
+      });
+
+      btcCandleSeries = btcCandleChart.addCandlestickSeries({
+        upColor: "#32d296",
+        downColor: "#ff7185",
+        borderUpColor: "#32d296",
+        borderDownColor: "#ff7185",
+        wickUpColor: "#32d296",
+        wickDownColor: "#ff7185"
+      });
+    }
+
+    const url = "https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=15m&limit=100";
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Binance API error");
+
+    const rows = await response.json();
+
+    const candles = rows.map(row => ({
+      time: Math.floor(row[0] / 1000),
+      open: Number(row[1]),
+      high: Number(row[2]),
+      low: Number(row[3]),
+      close: Number(row[4])
+    }));
+
+    btcCandleSeries.setData(candles);
+    btcCandleChart.timeScale().fitContent();
+
+    status.textContent =
+      "Live BTC candles updated: " +
+      new Date().toLocaleTimeString();
+
+  } catch (error) {
+    status.textContent = "Chart error: " + error.message;
+    console.error(error);
+  }
+}
+
+loadBTCCandles();
+setInterval(loadBTCCandles, 15000);
+                      // Public Binance Spot prices only. No API key and no order permissions.
   const BINANCE_TICKER_URLS = [
     "https://api.binance.com/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%2C%22SOLUSDT%22%5D",
     "https://data-api.binance.vision/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%2C%22SOLUSDT%22%5D"
