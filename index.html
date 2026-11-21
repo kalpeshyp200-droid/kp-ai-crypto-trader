@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="KP AI Crypto Trader demo dashboard">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <title>KP AI Crypto Trader</title>
+  <style>
+    :root{--bg:#08111f;--panel:#111d30;--panel2:#17253a;--line:#26364d;--text:#eef4ff;--muted:#91a3bb;--green:#32d296;--red:#ff7185;--blue:#66a7ff;--gold:#f4c66a}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(160deg,#0b1730,#07101c 55%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+    .app{max-width:760px;margin:auto;padding:18px 16px 94px}
+    header{display:flex;align-items:center;gap:12px;margin:8px 0 20px}
+    .logo{width:44px;height:44px;border-radius:14px;background:#18345c;display:grid;place-items:center;color:#8bc0ff;font-weight:900;font-size:20px;border:1px solid #31547e}
+    h1{font-size:18px;margin:0;letter-spacing:.3px} .sub{font-size:12px;color:var(--muted)}
+    .pill{margin-left:auto;border:1px solid #5c4c28;color:var(--gold);background:#332b1b;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:700}
+    .notice{background:#30291b;border:1px solid #66552b;color:#f7d990;padding:10px 12px;border-radius:12px;font-size:12px;margin-bottom:16px}
+    .hero,.card{background:linear-gradient(145deg,#14243a,#101b2d);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 12px 28px #0003}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .muted{color:var(--muted);font-size:12px}.price{font-size:32px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px}
+    .change{color:var(--green);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .metric{background:#0d192a;border:1px solid #243750;border-radius:14px;padding:13px}
+    .metric .value{font-size:21px;font-weight:750;margin-top:5px}
+    .green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.gold{color:var(--gold)}
+    .signal{font-size:24px;font-weight:850;margin:7px 0}.bar{height:9px;background:#26364d;border-radius:99px;overflow:hidden;display:flex;margin:10px 0 5px}.bar span:first-child{background:var(--green)}.bar span:last-child{background:var(--red)}
+    .section-title{font-size:15px;font-weight:750;margin:4px 0 12px}
+    .list{display:grid;gap:9px}.item{display:flex;justify-content:space-between;align-items:center;background:#0d192a;border:1px solid #243750;border-radius:12px;padding:12px}
+    .tag{font-size:11px;border-radius:99px;padding:4px 8px;background:#1c3049;color:#a9c9f4}
+    .button{border:0;background:#347fe8;color:white;padding:11px 14px;border-radius:11px;font-weight:700;cursor:pointer}
+    .button.secondary{background:#22334b;color:#dceaff;border:1px solid #38516e}
+    .button:active{transform:scale(.98)}
+    .page{display:none}.page.active{display:block}
+    nav{position:fixed;bottom:0;left:0;right:0;background:#0b1422f2;border-top:1px solid #26364d;display:flex;justify-content:center;padding:9px 8px calc(9px + env(safe-area-inset-bottom));backdrop-filter:blur(14px);z-index:5}
+    nav .navinner{display:flex;max-width:760px;width:100%;justify-content:space-around}
+    nav button{background:none;border:0;color:#91a3bb;font-size:11px;display:grid;gap:3px;justify-items:center;min-width:62px;padding:5px}
+    nav button.active{color:#8ec0ff} nav b{font-size:18px;font-weight:500}
+    input{width:100%;padding:11px;border-radius:10px;border:1px solid #334761;background:#0b1727;color:white;margin:6px 0 12px}
+    .small{font-size:11px;color:var(--muted)} footer{text-align:center;color:#72849d;font-size:11px;margin-top:20px}
+    @media(min-width:600px){.app{padding-top:28px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">KP</div>
+    <div><h1>KP AI CRYPTO TRADER</h1><div class="sub">Your crypto analysis workspace</div></div>
+    <div class="pill">DEMO MODE</div>
+  </header>
+
+  <div class="notice">Demo dashboard only. Prices and signals below are sample data, not live market data. No exchange orders are placed.</div>
+
+  <main>
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="row"><div><div class="muted">BTC / USD · Sample price</div><div class="price" id="btcPrice">$57,736.60</div><div class="change">● Demo market feed</div></div><div class="tag">15 MIN</div></div>
+        <div style="height:76px;margin-top:14px">
+          <svg viewBox="0 0 320 76" width="100%" height="100%" preserveAspectRatio="none" aria-label="Illustrative price line">
+            <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4d9cff" stop-opacity=".32"/><stop offset="1" stop-color="#4d9cff" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8 L320 76 L0 76Z" fill="url(#area)"/>
+            <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8" fill="none" stroke="#66a7ff" stroke-width="2.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="metric"><div class="muted">Virtual balance</div><div class="value">10,067.02 <small>USDT</small></div></div>
+        <div class="metric"><div class="muted">Simulation P/L</div><div class="value green">+67.02</div></div>
+        <div class="metric"><div class="muted">AI UP estimate</div><div class="value green">42.7%</div></div>
+        <div class="metric"><div class="muted">AI DOWN estimate</div><div class="value red">57.3%</div></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="row"><div class="section-title">AI signal</div><span class="tag">PAPER ONLY</span></div>
+        <div class="signal gold">WAIT</div>
+        <div class="muted">The demo strategy has no confirmed entry.</div>
+        <div class="bar"><span style="width:42.7%"></span><span style="width:57.3%"></span></div>
+        <div class="row small"><span class="green">UP 42.7%</span><span class="red">DOWN 57.3%</span></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">Technical indicators · Sample</div>
+        <div class="list">
+          <div class="item"><span class="muted">EMA 9</span><b>57,550.28</b></div>
+          <div class="item"><span class="muted">EMA 21</span><b>57,392.34</b></div>
+          <div class="item"><span class="muted">RSI 14</span><b>54.39</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="markets" class="page">
+      <div class="section-title">Markets</div>
+      <div class="notice">Sample values only. Live exchange data is not connected.</div>
+      <div class="list">
+        <div class="item"><div><b>Bitcoin</b><div class="muted">BTC / USD</div></div><div style="text-align:right"><b>$57,736.60</b><div class="green small">Sample</div></div></div>
+        <div class="item"><div><b>Ethereum</b><div class="muted">ETH / USD</div></div><div style="text-align:right"><b>$3,120.40</b><div class="green small">Sample</div></div></div>
+        <div class="item"><div><b>Solana</b><div class="muted">SOL / USD</div></div><div style="text-align:right"><b>$142.80</b><div class="green small">Sample</div></div></div>
+      </div>
+    </section>
+
+    <section id="signals" class="page">
+      <div class="section-title">AI signal centre</div>
+      <div class="card">
+        <div class="muted">Current demo signal</div><div class="signal gold">WAIT</div>
+        <p class="muted">AI probabilities are illustrative placeholders. The machine-learning model from Colab is not connected to this app yet.</p>
+        <div class="item"><span>EMA 9 / EMA 21</span><b class="green">Bullish crossover sample</b></div>
+        <div class="item" style="margin-top:8px"><span>RSI</span><b>54.39</b></div>
+      </div>
+    </section>
+
+    <section id="history" class="page">
+      <div class="section-title">Paper trade history</div>
+      <div class="notice">Historical simulation summary from the earlier prototype. Not live or verified trading performance.</div>
+      <div class="list">
+        <div class="item"><div><b>SHORT</b><div class="muted">Example trade 01</div></div><span class="green">+18.42 USDT</span></div>
+        <div class="item"><div><b>SHORT</b><div class="muted">Example trade 02</div></div><span class="green">+12.18 USDT</span></div>
+        <div class="item"><div><b>LONG</b><div class="muted">Example trade 03</div></div><span class="red">−8.65 USDT</span></div>
+      </div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="section-title">Settings</div>
+      <div class="card">
+        <div class="item"><span>Trading mode</span><b class="gold">Paper only</b></div>
+        <div class="item" style="margin-top:8px"><span>Real orders</span><b class="red">Disabled</b></div>
+        <label class="muted" for="risk">Demo risk per trade (%)</label>
+        <input id="risk" type="number" min="0.1" max="1" step="0.1" value="0.5">
+        <button class="button" onclick="saveRisk()">Save demo setting</button>
+        <p id="saved" class="small"></p>
+      </div>
+      <div class="notice">Never paste exchange API keys or passwords into this app. A secure backend is required before any exchange integration.</div>
+    </section>
+  </main>
+  <footer>KP AI Crypto Trader · Prototype v1.0 · Demo only</footer>
+</div>
+
+<nav><div class="navinner">
+  <button class="active" data-page="home"><b>⌂</b>Home</button>
+  <button data-page="markets"><b>◈</b>Markets</button>
+  <button data-page="signals"><b>⌁</b>Signals</button>
+  <button data-page="history"><b>◷</b>History</button>
+  <button data-page="settings"><b>⚙</b>Settings</button>
+</div></nav>
+
+<script>
+  const buttons = document.querySelectorAll("nav button");
+  const pages = document.querySelectorAll(".page");
+  buttons.forEach(btn => btn.addEventListener("click", () => {
+    buttons.forEach(b => b.classList.remove("active"));
+    pages.forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.page).classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  }));
+  function saveRisk(){
+    const value = Number(document.getElementById("risk").value);
+    const msg = document.getElementById("saved");
+    if (!Number.isFinite(value) || value < 0.1 || value > 1) {
+      msg.textContent = "Enter a demo risk between 0.1% and 1%.";
+      return;
+    }
+    localStorage.setItem("kp_demo_risk", value);
+    msg.textContent = "Demo setting saved on this device: " + value + "%";
+  }
+  const savedRisk = localStorage.getItem("kp_demo_risk");
+  if(savedRisk) document.getElementById("risk").value = savedRisk;
+
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW:", err));
+    });
+  }
+</script>
+</body>
+</html>
