@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="KP AI Crypto Trader demo dashboard">
+  <meta name="description" content="KP AI Crypto Trader dashboard with Binance public market prices and paper-only demo trading">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <title>KP AI Crypto Trader</title>
@@ -16,6 +16,8 @@
     .logo{width:44px;height:44px;border-radius:14px;background:#18345c;display:grid;place-items:center;color:#8bc0ff;font-weight:900;font-size:20px;border:1px solid #31547e}
     h1{font-size:18px;margin:0;letter-spacing:.3px} .sub{font-size:12px;color:var(--muted)}
     .pill{margin-left:auto;border:1px solid #5c4c28;color:var(--gold);background:#332b1b;padding:5px 9px;border-radius:99px;font-size:11px;font-weight:700}
+    .pill.live{border-color:#236d54;color:var(--green);background:#123426}
+    .pill.offline{border-color:#743846;color:var(--red);background:#351b26}
     .notice{background:#30291b;border:1px solid #66552b;color:#f7d990;padding:10px 12px;border-radius:12px;font-size:12px;margin-bottom:16px}
     .hero,.card{background:linear-gradient(145deg,#14243a,#101b2d);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 12px 28px #0003}
     .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -47,22 +49,24 @@
   <header>
     <div class="logo">KP</div>
     <div><h1>KP AI CRYPTO TRADER</h1><div class="sub">Your crypto analysis workspace</div></div>
-    <div class="pill">DEMO MODE</div>
+    <div class="pill" id="marketStatus">CONNECTINGâ€¦</div>
   </header>
 
-  <div class="notice">Demo dashboard only. Prices and signals below are sample data, not live market data. No exchange orders are placed.</div>
+  <div class="notice" id="dataNotice">Connecting to Binance public market data. Paper trading only â€” no exchange orders are placed. AI signals and account figures remain demo examples.</div>
 
   <main>
     <section id="home" class="page active">
       <div class="hero">
-        <div class="row"><div><div class="muted">BTC / USD · Sample price</div><div class="price" id="btcPrice">$57,736.60</div><div class="change">● Demo market feed</div></div><div class="tag">15 MIN</div></div>
+        <div class="row"><div><div class="muted">BTC / USDT Â· Binance Spot live price</div><div class="price" id="btcPrice">Connectingâ€¦</div><div class="change" id="btcFeedStatus">â— Connecting to Binanceâ€¦</div></div><div class="tag">LIVE PRICE</div></div>
+        <div class="small" id="btcUpdated" style="margin-top:5px">Waiting for first price updateâ€¦</div>
         <div style="height:76px;margin-top:14px">
-          <svg viewBox="0 0 320 76" width="100%" height="100%" preserveAspectRatio="none" aria-label="Illustrative price line">
+          <svg viewBox="0 0 320 76" width="100%" height="100%" preserveAspectRatio="none" aria-label="Illustrative chart, not live price history">
             <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#4d9cff" stop-opacity=".32"/><stop offset="1" stop-color="#4d9cff" stop-opacity="0"/></linearGradient></defs>
             <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8 L320 76 L0 76Z" fill="url(#area)"/>
             <path d="M0 58 L25 49 L48 54 L72 31 L96 39 L120 26 L145 35 L170 18 L194 29 L220 15 L245 27 L270 10 L295 20 L320 8" fill="none" stroke="#66a7ff" stroke-width="2.5"/>
           </svg>
         </div>
+        <div class="small">Illustrative chart only â€” live historical chart is not connected.</div>
       </div>
 
       <div class="grid">
@@ -81,7 +85,7 @@
       </div>
 
       <div class="card">
-        <div class="section-title">Technical indicators · Sample</div>
+        <div class="section-title">Technical indicators Â· Sample</div>
         <div class="list">
           <div class="item"><span class="muted">EMA 9</span><b>57,550.28</b></div>
           <div class="item"><span class="muted">EMA 21</span><b>57,392.34</b></div>
@@ -91,12 +95,12 @@
     </section>
 
     <section id="markets" class="page">
-      <div class="section-title">Markets</div>
-      <div class="notice">Sample values only. Live exchange data is not connected.</div>
+      <div class="section-title">Markets Â· Binance Spot</div>
+      <div class="notice" id="marketNotice">Waiting for live Binance pricesâ€¦</div>
       <div class="list">
-        <div class="item"><div><b>Bitcoin</b><div class="muted">BTC / USD</div></div><div style="text-align:right"><b>$57,736.60</b><div class="green small">Sample</div></div></div>
-        <div class="item"><div><b>Ethereum</b><div class="muted">ETH / USD</div></div><div style="text-align:right"><b>$3,120.40</b><div class="green small">Sample</div></div></div>
-        <div class="item"><div><b>Solana</b><div class="muted">SOL / USD</div></div><div style="text-align:right"><b>$142.80</b><div class="green small">Sample</div></div></div>
+        <div class="item"><div><b>Bitcoin</b><div class="muted">BTC / USDT</div></div><div style="text-align:right"><b id="marketBTC">â€”</b><div class="green small">Binance live</div></div></div>
+        <div class="item"><div><b>Ethereum</b><div class="muted">ETH / USDT</div></div><div style="text-align:right"><b id="marketETH">â€”</b><div class="green small">Binance live</div></div></div>
+        <div class="item"><div><b>Solana</b><div class="muted">SOL / USDT</div></div><div style="text-align:right"><b id="marketSOL">â€”</b><div class="green small">Binance live</div></div></div>
       </div>
     </section>
 
@@ -116,7 +120,7 @@
       <div class="list">
         <div class="item"><div><b>SHORT</b><div class="muted">Example trade 01</div></div><span class="green">+18.42 USDT</span></div>
         <div class="item"><div><b>SHORT</b><div class="muted">Example trade 02</div></div><span class="green">+12.18 USDT</span></div>
-        <div class="item"><div><b>LONG</b><div class="muted">Example trade 03</div></div><span class="red">−8.65 USDT</span></div>
+        <div class="item"><div><b>LONG</b><div class="muted">Example trade 03</div></div><span class="red">âˆ’8.65 USDT</span></div>
       </div>
     </section>
 
@@ -130,18 +134,18 @@
         <button class="button" onclick="saveRisk()">Save demo setting</button>
         <p id="saved" class="small"></p>
       </div>
-      <div class="notice">Never paste exchange API keys or passwords into this app. A secure backend is required before any exchange integration.</div>
+      <div class="notice">Never paste exchange API keys or passwords into this app. Public market prices do not need an API key. A secure backend is required before any exchange account or order integration.</div>
     </section>
   </main>
-  <footer>KP AI Crypto Trader · Prototype v1.0 · Demo only</footer>
+  <footer>KP AI Crypto Trader Â· Prototype v1.1 Â· Binance prices / Paper only</footer>
 </div>
 
 <nav><div class="navinner">
-  <button class="active" data-page="home"><b>⌂</b>Home</button>
-  <button data-page="markets"><b>◈</b>Markets</button>
-  <button data-page="signals"><b>⌁</b>Signals</button>
-  <button data-page="history"><b>◷</b>History</button>
-  <button data-page="settings"><b>⚙</b>Settings</button>
+  <button class="active" data-page="home"><b>âŒ‚</b>Home</button>
+  <button data-page="markets"><b>â—ˆ</b>Markets</button>
+  <button data-page="signals"><b>âŒ</b>Signals</button>
+  <button data-page="history"><b>â—·</b>History</button>
+  <button data-page="settings"><b>âš™</b>Settings</button>
 </div></nav>
 
 <script>
@@ -154,6 +158,81 @@
     document.getElementById(btn.dataset.page).classList.add("active");
     window.scrollTo({top:0, behavior:"smooth"});
   }));
+
+  // Public Binance Spot prices only. No API key and no order permissions.
+  const BINANCE_TICKER_URLS = [
+    "https://api.binance.com/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%2C%22SOLUSDT%22%5D",
+    "https://data-api.binance.vision/api/v3/ticker/price?symbols=%5B%22BTCUSDT%22%2C%22ETHUSDT%22%2C%22SOLUSDT%22%5D"
+  ];
+  const marketStatus = document.getElementById("marketStatus");
+  const marketNotice = document.getElementById("marketNotice");
+  const dataNotice = document.getElementById("dataNotice");
+  const btcFeedStatus = document.getElementById("btcFeedStatus");
+  const btcUpdated = document.getElementById("btcUpdated");
+  const priceElements = {
+    BTCUSDT: [document.getElementById("btcPrice"), document.getElementById("marketBTC")],
+    ETHUSDT: [document.getElementById("marketETH")],
+    SOLUSDT: [document.getElementById("marketSOL")]
+  };
+  const usdtFormat = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  async function fetchBinancePrices() {
+    let lastError;
+    for (const url of BINANCE_TICKER_URLS) {
+      try {
+        const response = await fetch(url, {cache:"no-store"});
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const rows = await response.json();
+        const prices = Object.fromEntries(rows.map(row => [row.symbol, Number(row.price)]));
+        for (const symbol of Object.keys(priceElements)) {
+          if (!Number.isFinite(prices[symbol]) || prices[symbol] <= 0) {
+            throw new Error("Missing or invalid " + symbol + " price");
+          }
+        }
+        return prices;
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error("Binance market data unavailable");
+  }
+
+  async function loadBinancePrices() {
+    try {
+      const prices = await fetchBinancePrices();
+      const now = new Date();
+      for (const symbol of Object.keys(priceElements)) {
+        const formatted = usdtFormat.format(prices[symbol]) + " USDT";
+        priceElements[symbol].forEach(el => {
+          if (el) el.textContent = formatted;
+        });
+      }
+      const updatedAt = now.toLocaleTimeString();
+      marketStatus.textContent = "LIVE DATA Â· PAPER ONLY";
+      marketStatus.classList.add("live");
+      marketStatus.classList.remove("offline");
+      btcFeedStatus.textContent = "â— Binance live market data";
+      btcUpdated.textContent = "Last updated: " + updatedAt;
+      marketNotice.textContent = "Live Binance Spot prices Â· Last updated: " + updatedAt + " Â· Refreshes every 10 seconds.";
+      dataNotice.textContent = "Binance public Spot prices are live. Virtual balance, P/L, AI signals and trade history are demo examples. No exchange orders are placed.";
+    } catch (error) {
+      marketStatus.textContent = "DATA OFFLINE";
+      marketStatus.classList.add("offline");
+      marketStatus.classList.remove("live");
+      btcFeedStatus.textContent = "â— Live price unavailable â€” retrying";
+      btcUpdated.textContent = "No successful live update yet.";
+      marketNotice.textContent = "Could not load Binance prices. Check your internet connection or try again later. Retrying automatically.";
+      dataNotice.textContent = "Binance market data is currently unavailable. Any prices still visible are not confirmed live data. Paper trading only; no exchange orders are placed.";
+      console.error("Binance market data:", error);
+    }
+  }
+
+  loadBinancePrices();
+  setInterval(loadBinancePrices, 10000);
+
   function saveRisk(){
     const value = Number(document.getElementById("risk").value);
     const msg = document.getElementById("saved");
