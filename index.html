@@ -42,16 +42,40 @@
     input{width:100%;padding:11px;border-radius:10px;border:1px solid #334761;background:#0b1727;color:white;margin:6px 0 12px}
     .small{font-size:11px;color:var(--muted)} footer{text-align:center;color:#72849d;font-size:11px;margin-top:20px}
     @media(min-width:600px){.app{padding-top:28px}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-  tradingview-widget-container {
+  
+.tradingview-widget-container {
   width: 100% !important;
-  height: 75vh !important;
-  min-height: 550px;
+  height: 650px !important;
+  min-height: 650px !important;
+  display: block !important;
 }
 
 .tradingview-widget-container__widget {
   width: 100% !important;
-  height: 100% !important;
+  height: 620px !important;
+  min-height: 620px !important;
 }
+
+.tradingview-widget-container iframe {
+  width: 100% !important;
+  height: 620px !important;
+  <div class="tradingview-widget-container" style="height:700px;width:100%;margin-top:15px">
+  <div class="tradingview-widget-container__widget" style="height:670px;width:100%"></div>
+}
+
+@media (max-width: 600px) {
+  .tradingview-widget-container {
+    height: 700px !important;
+    min-height: 700px !important;
+  }
+
+  .tradingview-widget-container__widget,
+  .tradingview-widget-container iframe {
+    height: 670px !important;
+    min-height: 670px !important;
+  }
+}
+
   </style>
 </head>
 <body>
